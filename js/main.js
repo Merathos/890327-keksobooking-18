@@ -1,7 +1,5 @@
 'use strict';
 
-document.querySelector('.map').classList.remove('map--faded');
-
 var APARTAMENT_TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKIN_AND_CHECKOUT_TIME = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
@@ -19,6 +17,8 @@ var map = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('button');
+
+document.querySelector('.map').classList.remove('map--faded');
 
 var getRandomValue = function (min, max) {
   var result = Math.random() * (max - min) + min;
