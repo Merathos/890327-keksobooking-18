@@ -10,9 +10,10 @@ var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 560;
 var LOCATION_X_MIN = 100;
 var LOCATION_X_MAX = 1100;
+var MIN_PRICE = 10000;
+var MAX_PRICE = 80000;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-var randomAnnouncmentsList = [];
 
 var map = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
@@ -35,6 +36,8 @@ var getArrayWithRandomLenght = function (arr) {
 };
 
 var getRandomAnnouncments = function () {
+  var randomAnnouncmentsList = [];
+
   for (var i = 1; i <= 8; i++) {
     var randomAnnouncment = {
       author: {
@@ -43,8 +46,8 @@ var getRandomAnnouncments = function () {
 
       offer: {
         title: 'Объявление о продаже',
-        address: '600, 350',
-        price: 19999,
+        address: getRandomValue(LOCATION_X_MIN, LOCATION_X_MAX) + ', ' + getRandomValue(LOCATION_Y_MIN, LOCATION_Y_MAX),
+        price: getRandomValue(MIN_PRICE, MAX_PRICE),
         type: APARTAMENT_TYPE[getRandomValue(0, APARTAMENT_TYPE.length)],
         rooms: getRandomValue(0, 4),
         guests: getRandomValue(0, 4),
@@ -66,6 +69,7 @@ var getRandomAnnouncments = function () {
 };
 
 var renderPins = function () {
+  var randomAnnouncmentsList = getRandomAnnouncments();
   var pins = [];
 
   for (var i = 0; i < randomAnnouncmentsList.length; i++) {
@@ -80,7 +84,7 @@ var renderPins = function () {
     var locationX = randomAnnouncmentsList[i].location.x + PIN_WIDTH / 2 + 'px';
     var locationY = randomAnnouncmentsList[i].location.y + PIN_HEIGHT + 'px';
     var pinCoordinates = 'left: ' + locationX + '; ' + 'top: ' + locationY + ';';
-    pinElement.setAttribute('style', pinCoordinates);
+    pinElement.style.cssText = pinCoordinates;
 
     pins.push(pinElement);
   }
@@ -96,6 +100,5 @@ var appendPins = function (pins) {
   map.appendChild(fragment);
 };
 
-getRandomAnnouncments();
 var pins = renderPins();
 appendPins(pins);
