@@ -12,6 +12,7 @@ var MIN_PRICE = 10000;
 var MAX_PRICE = 80000;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var ANNOUNCMENT_AMOUNT = 8;
 
 var map = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
@@ -38,7 +39,7 @@ var getArrayWithRandomLenght = function (arr) {
 var getRandomAnnouncments = function () {
   var randomAnnouncmentsList = [];
 
-  for (var i = 1; i <= 8; i++) {
+  for (var i = 1; i <= ANNOUNCMENT_AMOUNT; i++) {
     var randomAnnouncment = {
       author: {
         avatar: 'img/avatars/user0' + i + '.png'
