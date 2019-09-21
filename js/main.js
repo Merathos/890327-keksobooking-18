@@ -14,6 +14,7 @@ var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var ANNOUNCMENT_AMOUNT = 8;
 
+var mapFilterContainer = document.querySelector('.map__filters-container');
 var map = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content
@@ -69,8 +70,90 @@ var getRandomAnnouncments = function () {
   return randomAnnouncmentsList;
 };
 
-var renderPins = function () {
-  var randomAnnouncmentsList = getRandomAnnouncments();
+var renderCard = function (firstAnnouncment) {
+  var templateCard = document.querySelector('#card').content;
+  var mapCard = templateCard.querySelector('.map__card');
+
+  var itemCard = mapCard.cloneNode(true);
+  var title = itemCard.querySelector('.popup__title');
+  var address = itemCard.querySelector('.popup__text--address');
+  var price = itemCard.querySelector('.popup__text--price');
+  var type = itemCard.querySelector('.popup__type');
+  var roomsGuest = itemCard.querySelector('.popup__text--capacity');
+  var checkInOut = itemCard.querySelector('.popup__text--time');
+
+  var featureList = itemCard.querySelector('.popup__features');
+  var featureItem = featureList.querySelectorAll('.popup__feature');
+
+  var description = itemCard.querySelector('.popup__description');
+  var avatar = itemCard.querySelector('.popup__avatar');
+  var photos = itemCard.querySelector('.popup__photos');
+
+  title.textContent = firstAnnouncment.offer.title;
+
+  address.textContent = firstAnnouncment.offer.address;
+
+  price.textContent = firstAnnouncment.offer.price + '₽/ночь';
+
+  switch (firstAnnouncment.offer.type) {
+    case 'flat':
+      type.textContent = 'Квартира';
+      break;
+    case 'bungalo':
+      type.textContent = 'Бунгало';
+      break;
+    case 'house':
+      type.textContent = 'Дом';
+      break;
+    case 'palace':
+      type.textContent = 'Дворец';
+      break;
+  }
+
+  roomsGuest.textContent = firstAnnouncment.offer.rooms + ' комнаты для ' + firstAnnouncment.offer.guests + ' гостей';
+
+  checkInOut.textContent = 'Заезд после ' + firstAnnouncment.offer.checkin + ', выезд до ' + firstAnnouncment.offer.checkout;
+
+  for (var i = 0; i < featureItem.length; i++) {
+    var feature = featureItem[i];
+    var featureContains = true;
+
+    for (var j = 0; j < firstAnnouncment.offer.features.length; j++) {
+      var featureMode = 'popup__feature--' + firstAnnouncment.offer.features[j];
+
+      if (!feature.classList.contains(featureMode)) {
+        featureContains = false;
+      }
+    }
+
+    if (!featureContains) {
+      feature.style.display = 'none';
+      featureContains = true;
+    }
+  }
+
+  description.textContent = firstAnnouncment.offer.description;
+
+  while (photos.firstChild) {
+    photos.removeChild(photos.firstChild);
+  }
+
+  for (i = 0; i < firstAnnouncment.offer.photos.length; i++) {
+    var photoItem = document.createElement('img');
+    photoItem.classList.add('popup__photo');
+    photoItem.src = firstAnnouncment.offer.photos[i];
+    photoItem.width = 45;
+    photoItem.height = 40;
+    photoItem.alt = firstAnnouncment.offer.title;
+    photos.appendChild(photoItem);
+  }
+
+  avatar.src = firstAnnouncment.author.avatar;
+
+  return itemCard;
+};
+
+var renderPins = function (randomAnnouncmentsList) {
   var pins = [];
 
   for (var i = 0; i < randomAnnouncmentsList.length; i++) {
@@ -101,5 +184,14 @@ var appendPins = function (pins) {
   map.appendChild(fragment);
 };
 
-var pins = renderPins();
+var appendCard = function (firstAnnouncment) {
+  var cardItem = renderCard(firstAnnouncment);
+  mapFilterContainer.insertAdjacentElement('beforebegin', cardItem);
+};
+
+var randomAnnouncmentsList = getRandomAnnouncments();
+var firstAnnouncment = randomAnnouncmentsList[0];
+var pins = renderPins(randomAnnouncmentsList);
+
 appendPins(pins);
+appendCard(firstAnnouncment);
