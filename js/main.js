@@ -121,14 +121,15 @@ var renderCard = function (firstAnnouncment) {
     for (var j = 0; j < firstAnnouncment.offer.features.length; j++) {
       var featureMode = 'popup__feature--' + firstAnnouncment.offer.features[j];
 
-      if (!feature.classList.contains(featureMode)) {
+      if (feature.classList.contains(featureMode)) {
+        featureContains = true;
+      } else {
         featureContains = false;
       }
     }
 
     if (!featureContains) {
       feature.style.display = 'none';
-      featureContains = true;
     }
   }
 
