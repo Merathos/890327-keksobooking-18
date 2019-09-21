@@ -121,10 +121,7 @@ var renderCard = function (firstAnnouncment) {
 
   description.textContent = firstAnnouncment.offer.description;
 
-  while (photos.firstChild) {
-    photos.removeChild(photos.firstChild);
-  }
-
+  photos.innerHTML = '';
   for (i = 0; i < firstAnnouncment.offer.photos.length; i++) {
     var photoItem = document.createElement('img');
     photoItem.classList.add('popup__photo');
