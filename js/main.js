@@ -51,7 +51,7 @@ var getRandomAnnouncments = function () {
         title: 'Объявление о продаже',
         address: getRandomValue(LOCATION_X_MIN, LOCATION_X_MAX) + ', ' + getRandomValue(LOCATION_Y_MIN, LOCATION_Y_MAX),
         price: getRandomValue(MIN_PRICE, MAX_PRICE),
-        type: APARTAMENT_TYPE[getRandomValue(0, APARTAMENT_TYPE.length)],
+        type: APARTAMENT_TYPE[getRandomValue(0, APARTAMENT_TYPE.length - 1)],
         rooms: getRandomValue(0, 4),
         guests: getRandomValue(0, 4),
         checkin: CHECKIN_AND_CHECKOUT_TIME[getRandomValue(0, CHECKIN_AND_CHECKOUT_TIME.length - 1)],
@@ -71,7 +71,7 @@ var getRandomAnnouncments = function () {
   return randomAnnouncmentsList;
 };
 
-var renderCard = function (firstAnnouncment) {
+var renderCard = function (announcment) {
   var templateCard = document.querySelector('#card').content;
   var mapCard = templateCard.querySelector('.map__card');
   var itemCard = mapCard.cloneNode(true);
@@ -85,54 +85,47 @@ var renderCard = function (firstAnnouncment) {
   var description = itemCard.querySelector('.popup__description');
   var avatar = itemCard.querySelector('.popup__avatar');
   var photos = itemCard.querySelector('.popup__photos');
+  var HousingType = {
+    FLAT: 'Квартира',
+    BUNGALO: 'Бунгало',
+    HOUSE: 'Дом',
+    PALACE: 'Дворец'
+  };
 
-  title.textContent = firstAnnouncment.offer.title;
+  title.textContent = announcment.offer.title;
 
-  address.textContent = firstAnnouncment.offer.address;
+  address.textContent = announcment.offer.address;
 
-  price.textContent = firstAnnouncment.offer.price + '₽/ночь';
+  price.textContent = announcment.offer.price + '₽/ночь';
 
-  switch (firstAnnouncment.offer.type) {
-    case 'flat':
-      type.textContent = 'Квартира';
-      break;
-    case 'bungalo':
-      type.textContent = 'Бунгало';
-      break;
-    case 'house':
-      type.textContent = 'Дом';
-      break;
-    case 'palace':
-      type.textContent = 'Дворец';
-      break;
-  }
+  type.textContent = HousingType[announcment.offer.type.toUpperCase()];
 
-  roomsGuest.textContent = firstAnnouncment.offer.rooms + ' комнаты для ' + firstAnnouncment.offer.guests + ' гостей';
+  roomsGuest.textContent = announcment.offer.rooms + ' комнаты для ' + announcment.offer.guests + ' гостей';
 
-  checkInOut.textContent = 'Заезд после ' + firstAnnouncment.offer.checkin + ', выезд до ' + firstAnnouncment.offer.checkout;
+  checkInOut.textContent = 'Заезд после ' + announcment.offer.checkin + ', выезд до ' + announcment.offer.checkout;
 
   featureList.innerHTML = '';
-  for (var i = 0; i < firstAnnouncment.offer.features.length; i++) {
+  for (var i = 0; i < announcment.offer.features.length; i++) {
     var featureItem = document.createElement('li');
-    var featureClass = 'popup__feature popup__feature--' + firstAnnouncment.offer.features[i];
+    var featureClass = 'popup__feature popup__feature--' + announcment.offer.features[i];
     featureItem.className = featureClass;
     featureList.appendChild(featureItem);
   }
 
-  description.textContent = firstAnnouncment.offer.description;
+  description.textContent = announcment.offer.description;
 
   photos.innerHTML = '';
-  for (i = 0; i < firstAnnouncment.offer.photos.length; i++) {
+  for (i = 0; i < announcment.offer.photos.length; i++) {
     var photoItem = document.createElement('img');
     photoItem.classList.add('popup__photo');
-    photoItem.src = firstAnnouncment.offer.photos[i];
+    photoItem.src = announcment.offer.photos[i];
     photoItem.width = 45;
     photoItem.height = 40;
-    photoItem.alt = firstAnnouncment.offer.title;
+    photoItem.alt = announcment.offer.title;
     photos.appendChild(photoItem);
   }
 
-  avatar.src = firstAnnouncment.author.avatar;
+  avatar.src = announcment.author.avatar;
 
   return itemCard;
 };
@@ -168,14 +161,16 @@ var appendPins = function (pins) {
   map.appendChild(fragment);
 };
 
-var appendCard = function (firstAnnouncment) {
-  var cardItem = renderCard(firstAnnouncment);
+var appendCard = function (announcmentCard) {
+  var cardItem = renderCard(announcmentCard);
   mapFilterContainer.insertAdjacentElement('beforebegin', cardItem);
 };
 
-var randomAnnouncmentsList = getRandomAnnouncments();
-var firstAnnouncment = randomAnnouncmentsList[0];
-var pins = renderPins(randomAnnouncmentsList);
+var runScript = function () {
+  var randomAnnouncmentsList = getRandomAnnouncments();
+  var pins = renderPins(randomAnnouncmentsList);
+  appendPins(pins);
+  appendCard(randomAnnouncmentsList[0]);
+};
 
-appendPins(pins);
-appendCard(firstAnnouncment);
+runScript();
