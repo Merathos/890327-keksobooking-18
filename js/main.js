@@ -13,6 +13,12 @@ var MAX_PRICE = 80000;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var ANNOUNCMENT_AMOUNT = 8;
+var HousingType = {
+  FLAT: 'Квартира',
+  BUNGALO: 'Бунгало',
+  HOUSE: 'Дом',
+  PALACE: 'Дворец'
+};
 
 var mapFilterContainer = document.querySelector('.map__filters-container');
 var map = document.querySelector('.map__pins');
@@ -85,12 +91,6 @@ var renderCard = function (announcment) {
   var description = itemCard.querySelector('.popup__description');
   var avatar = itemCard.querySelector('.popup__avatar');
   var photos = itemCard.querySelector('.popup__photos');
-  var HousingType = {
-    FLAT: 'Квартира',
-    BUNGALO: 'Бунгало',
-    HOUSE: 'Дом',
-    PALACE: 'Дворец'
-  };
 
   title.textContent = announcment.offer.title;
 
