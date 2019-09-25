@@ -10,14 +10,24 @@ var LOCATION_X_MIN = 100;
 var LOCATION_X_MAX = 1100;
 var MIN_PRICE = 10000;
 var MAX_PRICE = 80000;
-var PIN_WIDTH = 50;
-var PIN_HEIGHT = 70;
+var UserPin = {
+  WIDTH: 50,
+  HEIGHT: 70
+};
 var ANNOUNCMENT_AMOUNT = 8;
+var ENTER_KEYCODE = 13;
+var PIN_TIP_HEIGHT = 19;
 var HousingType = {
   FLAT: 'Квартира',
   BUNGALO: 'Бунгало',
   HOUSE: 'Дом',
   PALACE: 'Дворец'
+};
+var HousingTypeToPrice = {
+  FLAT: '1000',
+  BUNGALO: '0',
+  HOUSE: '5000',
+  PALACE: '10000'
 };
 
 var mapFilterContainer = document.querySelector('.map__filters-container');
@@ -25,8 +35,18 @@ var map = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('button');
+var mainPin = map.querySelector('.map__pin--main');
+var mapSection = document.querySelector('.map');
+var newOfferForm = document.querySelector('.ad-form');
+var addressInput = newOfferForm.querySelector('#address');
+var roomInput = newOfferForm.querySelector('#room_number');
+var guestsInput = newOfferForm.querySelector('#capacity');
+var timein = newOfferForm.querySelector('#timein');
+var timeout = newOfferForm.querySelector('#timeout');
+var appartmentType = newOfferForm.querySelector('#type');
+var appartmentPrice = newOfferForm.querySelector('#price');
 
-document.querySelector('.map').classList.remove('map--faded');
+var isPageActive = false;
 
 var getRandomValue = function (min, max) {
   min = Math.ceil(min);
@@ -142,8 +162,8 @@ var renderPins = function (randomAnnouncmentsList) {
     var offerTitle = randomAnnouncmentsList[i].offer.title;
     pinElement.querySelector('img').setAttribute('alt', offerTitle);
 
-    var locationX = randomAnnouncmentsList[i].location.x + PIN_WIDTH / 2 + 'px';
-    var locationY = randomAnnouncmentsList[i].location.y + PIN_HEIGHT + 'px';
+    var locationX = randomAnnouncmentsList[i].location.x + UserPin.WIDTH / 2 + 'px';
+    var locationY = randomAnnouncmentsList[i].location.y + UserPin.HEIGHT + 'px';
     var pinCoordinates = 'left: ' + locationX + '; ' + 'top: ' + locationY + ';';
     pinElement.style.cssText = pinCoordinates;
 
@@ -173,4 +193,108 @@ var runScript = function () {
   appendCard(randomAnnouncmentsList[0]);
 };
 
-runScript();
+var deactivatePage = function () {
+  mapSection.classList.add('map--faded');
+  newOfferForm.classList.add('ad-form--disabled');
+  newOfferForm.querySelectorAll('fieldset, input, select').forEach(function (elem) {
+    elem.disabled = true;
+  });
+  mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
+    elem.disabled = true;
+  });
+  isPageActive = false;
+};
+
+var activatePage = function () {
+  mapSection.classList.remove('map--faded');
+  newOfferForm.classList.remove('ad-form--disabled');
+  newOfferForm.querySelectorAll('fieldset, input, select').forEach(function (elem) {
+    elem.disabled = false;
+  });
+  mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
+    elem.disabled = false;
+  });
+  if (!isPageActive) {
+    runScript();
+  }
+  isPageActive = true;
+};
+
+var getAddress = function () {
+  var yPointer = isPageActive ? mainPin.offsetHeight + PIN_TIP_HEIGHT : mainPin.offsetHeight / 2;
+  var xCoord = Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2);
+  var yCoord = Math.round(mainPin.offsetTop + yPointer);
+  addressInput.value = xCoord + ', ' + yCoord;
+};
+
+var validateGuestsAndRooms = function () {
+  var rooms = roomInput.value;
+  var guests = guestsInput.value;
+
+  switch (rooms) {
+    case '1':
+      if (guests === '1') {
+        return '';
+      }
+      return '1 комната только для 1 гостя';
+    case '2':
+      if (guests === '1' || guests === '2') {
+        return '';
+      }
+      return '2 комнаты только для 1 или 2 гостей';
+    case '3':
+      if (guests === '1' || guests === '2' || guests === '3') {
+        return '';
+      }
+      return '3 комнаты только для 1, 2 или 3 гостей';
+    case '100':
+      if (guests === '0') {
+        return '';
+      }
+      return '100 комнат не для гостей';
+  }
+  return '';
+};
+
+var syncTimeIn = function () {
+  timein.value = timeout.value;
+};
+
+var syncTimeOut = function () {
+  timeout.value = timein.value;
+};
+
+var onRoomsOrGuestsInput = function () {
+  roomInput.setCustomValidity(validateGuestsAndRooms());
+  guestsInput.setCustomValidity(validateGuestsAndRooms());
+};
+
+var getPriceForAppartment = function () {
+  appartmentPrice.placeholder = HousingTypeToPrice[appartmentType.value.toUpperCase()];
+  appartmentPrice.min = parseInt(HousingTypeToPrice[appartmentType.value.toUpperCase()], 10);
+};
+
+var initPage = function () {
+  deactivatePage();
+  getAddress();
+};
+
+mainPin.addEventListener('mousedown', function () {
+  activatePage();
+  getAddress();
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    activatePage();
+    getAddress();
+  }
+});
+
+roomInput.addEventListener('change', onRoomsOrGuestsInput);
+guestsInput.addEventListener('change', onRoomsOrGuestsInput);
+timein.addEventListener('change', syncTimeOut);
+timeout.addEventListener('change', syncTimeIn);
+appartmentType.addEventListener('change', getPriceForAppartment);
+
+initPage();
