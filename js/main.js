@@ -10,8 +10,10 @@ var LOCATION_X_MIN = 100;
 var LOCATION_X_MAX = 1100;
 var MIN_PRICE = 10000;
 var MAX_PRICE = 80000;
-var PIN_WIDTH = 50;
-var PIN_HEIGHT = 70;
+var UserPin = {
+  WIDTH: 50,
+  HEIGHT: 70
+};
 var ANNOUNCMENT_AMOUNT = 8;
 var ENTER_KEYCODE = 13;
 var PIN_TIP_HEIGHT = 19;
@@ -21,6 +23,13 @@ var HousingType = {
   HOUSE: 'Дом',
   PALACE: 'Дворец'
 };
+var HousingTypeToPrice = {
+  FLAT: '1000',
+  BUNGALO: '0',
+  HOUSE: '5000',
+  PALACE: '10000'
+};
+
 var mapFilterContainer = document.querySelector('.map__filters-container');
 var map = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
@@ -153,8 +162,8 @@ var renderPins = function (randomAnnouncmentsList) {
     var offerTitle = randomAnnouncmentsList[i].offer.title;
     pinElement.querySelector('img').setAttribute('alt', offerTitle);
 
-    var locationX = randomAnnouncmentsList[i].location.x + PIN_WIDTH / 2 + 'px';
-    var locationY = randomAnnouncmentsList[i].location.y + PIN_HEIGHT + 'px';
+    var locationX = randomAnnouncmentsList[i].location.x + UserPin.WIDTH / 2 + 'px';
+    var locationY = randomAnnouncmentsList[i].location.y + UserPin.HEIGHT + 'px';
     var pinCoordinates = 'left: ' + locationX + '; ' + 'top: ' + locationY + ';';
     pinElement.style.cssText = pinCoordinates;
 
@@ -255,29 +264,14 @@ var syncTimeOut = function () {
   timeout.value = timein.value;
 };
 
-var onRoomsOrGuestsInput = function (evt) {
-  evt.target.setCustomValidity(validateGuestsAndRooms());
+var onRoomsOrGuestsInput = function () {
+  roomInput.setCustomValidity(validateGuestsAndRooms());
+  guestsInput.setCustomValidity(validateGuestsAndRooms());
 };
 
 var getPriceForAppartment = function () {
-  switch (appartmentType.value) {
-    case 'bungalo':
-      appartmentPrice.placeholder = '0';
-      appartmentPrice.min = 0;
-      break;
-    case 'flat':
-      appartmentPrice.placeholder = '1000';
-      appartmentPrice.min = 1000;
-      break;
-    case 'house':
-      appartmentPrice.placeholder = '5000';
-      appartmentPrice.min = 5000;
-      break;
-    case 'palace':
-      appartmentPrice.placeholder = '10000';
-      appartmentPrice.min = 10000;
-      break;
-  }
+  appartmentPrice.placeholder = HousingTypeToPrice[appartmentType.value.toUpperCase()];
+  appartmentPrice.min = parseInt(HousingTypeToPrice[appartmentType.value.toUpperCase()], 10);
 };
 
 var initPage = function () {
@@ -297,8 +291,8 @@ mainPin.addEventListener('keydown', function (evt) {
   }
 });
 
-roomInput.addEventListener('input', onRoomsOrGuestsInput);
-guestsInput.addEventListener('input', onRoomsOrGuestsInput);
+roomInput.addEventListener('change', onRoomsOrGuestsInput);
+guestsInput.addEventListener('change', onRoomsOrGuestsInput);
 timein.addEventListener('change', syncTimeOut);
 timeout.addEventListener('change', syncTimeIn);
 appartmentType.addEventListener('change', getPriceForAppartment);
