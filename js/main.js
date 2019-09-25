@@ -205,6 +205,9 @@ var activatePage = function () {
   mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
     elem.disabled = false;
   });
+  if (!isPageActive) {
+    runScript();
+  }
   isPageActive = true;
 };
 
@@ -301,4 +304,3 @@ timeout.addEventListener('change', syncTimeIn);
 appartmentType.addEventListener('change', getPriceForAppartment);
 
 initPage();
-// runScript();
