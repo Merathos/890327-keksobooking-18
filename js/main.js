@@ -15,7 +15,10 @@ var UserPin = {
   HEIGHT: 70
 };
 var ANNOUNCMENT_AMOUNT = 8;
-var ENTER_KEYCODE = 13;
+var KeyCodes = {
+  ESC: 27,
+  ENTER: 13
+};
 var PIN_TIP_HEIGHT = 19;
 var HousingType = {
   FLAT: 'Квартира',
@@ -38,6 +41,7 @@ var pinTemplate = document.querySelector('#pin')
 var mainPin = map.querySelector('.map__pin--main');
 var mapSection = document.querySelector('.map');
 var newOfferForm = document.querySelector('.ad-form');
+var submitBtn = newOfferForm.querySelector('.ad-form__submit');
 var addressInput = newOfferForm.querySelector('#address');
 var roomInput = newOfferForm.querySelector('#room_number');
 var guestsInput = newOfferForm.querySelector('#capacity');
@@ -101,6 +105,7 @@ var renderCard = function (announcment) {
   var templateCard = document.querySelector('#card').content;
   var mapCard = templateCard.querySelector('.map__card');
   var itemCard = mapCard.cloneNode(true);
+  var closeBtn = itemCard.querySelector('.popup__close');
   var title = itemCard.querySelector('.popup__title');
   var address = itemCard.querySelector('.popup__text--address');
   var price = itemCard.querySelector('.popup__text--price');
@@ -111,6 +116,17 @@ var renderCard = function (announcment) {
   var description = itemCard.querySelector('.popup__description');
   var avatar = itemCard.querySelector('.popup__avatar');
   var photos = itemCard.querySelector('.popup__photos');
+
+  var onPopupEscPress = function (evt) {
+    if (evt.keyCode === KeyCodes.ESC) {
+      itemCard.remove();
+    }
+  };
+
+  var closeCard = function () {
+    itemCard.remove();
+    document.removeEventListener('keydown', onPopupEscPress);
+  };
 
   title.textContent = announcment.offer.title;
 
@@ -146,6 +162,8 @@ var renderCard = function (announcment) {
   }
 
   avatar.src = announcment.author.avatar;
+  document.addEventListener('keydown', onPopupEscPress);
+  closeBtn.addEventListener('click', closeCard);
 
   return itemCard;
 };
@@ -166,6 +184,12 @@ var renderPins = function (randomAnnouncmentsList) {
     var locationY = randomAnnouncmentsList[i].location.y + UserPin.HEIGHT + 'px';
     var pinCoordinates = 'left: ' + locationX + '; ' + 'top: ' + locationY + ';';
     pinElement.style.cssText = pinCoordinates;
+
+    pinElement.addEventListener('click', function (card) {
+      return function () {
+        appendCard(card);
+      };
+    }(randomAnnouncmentsList[i]));
 
     pins.push(pinElement);
   }
@@ -190,7 +214,6 @@ var runScript = function () {
   var randomAnnouncmentsList = getRandomAnnouncments();
   var pins = renderPins(randomAnnouncmentsList);
   appendPins(pins);
-  appendCard(randomAnnouncmentsList[0]);
 };
 
 var deactivatePage = function () {
@@ -266,7 +289,6 @@ var syncTimeOut = function () {
 
 var onRoomsOrGuestsInput = function () {
   roomInput.setCustomValidity(validateGuestsAndRooms());
-  guestsInput.setCustomValidity(validateGuestsAndRooms());
 };
 
 var getPriceForAppartment = function () {
@@ -285,7 +307,7 @@ mainPin.addEventListener('mousedown', function () {
 });
 
 mainPin.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
+  if (evt.keyCode === KeyCodes.ENTER) {
     activatePage();
     getAddress();
   }
@@ -296,5 +318,8 @@ guestsInput.addEventListener('change', onRoomsOrGuestsInput);
 timein.addEventListener('change', syncTimeOut);
 timeout.addEventListener('change', syncTimeIn);
 appartmentType.addEventListener('change', getPriceForAppartment);
+submitBtn.addEventListener('click', function () {
+  onRoomsOrGuestsInput();
+});
 
 initPage();
