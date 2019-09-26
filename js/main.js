@@ -119,7 +119,7 @@ var renderCard = function (announcment) {
 
   var onPopupEscPress = function (evt) {
     if (evt.keyCode === KeyCodes.ESC) {
-      itemCard.remove();
+      closeCard();
     }
   };
 
@@ -171,28 +171,25 @@ var renderCard = function (announcment) {
 var renderPins = function (randomAnnouncmentsList) {
   var pins = [];
 
-  for (var i = 0; i < randomAnnouncmentsList.length; i++) {
+  randomAnnouncmentsList.forEach(function (element) {
     var pinElement = pinTemplate.cloneNode(true);
 
-    var avatarUrl = randomAnnouncmentsList[i].author.avatar;
+    var avatarUrl = element.author.avatar;
     pinElement.querySelector('img').setAttribute('src', avatarUrl);
-
-    var offerTitle = randomAnnouncmentsList[i].offer.title;
+    var offerTitle = element.offer.title;
     pinElement.querySelector('img').setAttribute('alt', offerTitle);
-
-    var locationX = randomAnnouncmentsList[i].location.x + UserPin.WIDTH / 2 + 'px';
-    var locationY = randomAnnouncmentsList[i].location.y + UserPin.HEIGHT + 'px';
+    var locationX = element.location.x + UserPin.WIDTH / 2 + 'px';
+    var locationY = element.location.y + UserPin.HEIGHT + 'px';
     var pinCoordinates = 'left: ' + locationX + '; ' + 'top: ' + locationY + ';';
     pinElement.style.cssText = pinCoordinates;
 
-    pinElement.addEventListener('click', function (card) {
-      return function () {
-        appendCard(card);
-      };
-    }(randomAnnouncmentsList[i]));
+    pinElement.addEventListener('click', function () {
+      appendCard(element);
+    });
 
     pins.push(pinElement);
-  }
+  });
+
   return pins;
 };
 
