@@ -10,6 +10,10 @@
   var mapFilterContainer = document.querySelector('.map__filters-container');
 
   var isPageActive = false;
+  var startCoords = {
+    x: 0,
+    y: 0
+  };
 
   var activatePage = function () {
     mapSection.classList.remove('map--faded');
@@ -38,6 +42,47 @@
     isPageActive = false;
   };
 
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    var currentY = mainPin.offsetTop - shift.y;
+    var currentX = mainPin.offsetLeft - shift.x;
+
+    mainPin.style.top = Math.max(40, Math.min(620, currentY)) + 'px';
+    mainPin.style.left = Math.max(0, Math.min(1135, currentX)) + 'px';
+    getAddress();
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    getAddress();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  var dragHandler = function (evt) {
+    evt.preventDefault();
+
+    startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  };
+
   var getAddress = function () {
     var yPointer = isPageActive ? mainPin.offsetHeight + PIN_TIP_HEIGHT : mainPin.offsetHeight / 2;
     var xCoord = Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2);
@@ -60,15 +105,15 @@
     getAddress();
   };
 
-  mainPin.addEventListener('mousedown', function () {
+  mainPin.addEventListener('mousedown', function (evt) {
     activatePage();
-    getAddress();
+    dragHandler(evt);
   });
 
   mainPin.addEventListener('keydown', function (evt) {
     if (evt.keyCode === window.card.KeyCodes.ENTER) {
       activatePage();
-      getAddress();
+      dragHandler(evt);
     }
   });
 
