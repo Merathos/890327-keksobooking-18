@@ -5,19 +5,19 @@
   var map = document.querySelector('.map__pins');
   var mainPin = map.querySelector('.map__pin--main');
   var mapSection = document.querySelector('.map');
-  window.newOfferForm = document.querySelector('.ad-form');
-  var addressInput = window.newOfferForm.querySelector('#address');
-  window.mapFilterContainer = document.querySelector('.map__filters-container');
+  var newOfferForm = document.querySelector('.ad-form');
+  var addressInput = newOfferForm.querySelector('#address');
+  var mapFilterContainer = document.querySelector('.map__filters-container');
 
   var isPageActive = false;
 
   var activatePage = function () {
     mapSection.classList.remove('map--faded');
-    window.newOfferForm.classList.remove('ad-form--disabled');
-    window.newOfferForm.querySelectorAll('fieldset, input, select').forEach(function (elem) {
+    newOfferForm.classList.remove('ad-form--disabled');
+    newOfferForm.querySelectorAll('fieldset, input, select').forEach(function (elem) {
       elem.disabled = false;
     });
-    window.mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
+    mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
       elem.disabled = false;
     });
     if (!isPageActive) {
@@ -28,11 +28,11 @@
 
   var deactivatePage = function () {
     mapSection.classList.add('map--faded');
-    window.newOfferForm.classList.add('ad-form--disabled');
-    window.newOfferForm.querySelectorAll('fieldset, input, select').forEach(function (elem) {
+    newOfferForm.classList.add('ad-form--disabled');
+    newOfferForm.querySelectorAll('fieldset, input, select').forEach(function (elem) {
       elem.disabled = true;
     });
-    window.mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
+    mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
       elem.disabled = true;
     });
     isPageActive = false;
@@ -47,7 +47,7 @@
 
   var appendPins = function () {
     var fragment = document.createDocumentFragment();
-    var pins = window.renderPins(window.randomAnnouncmentsList);
+    var pins = window.pin.renderPins(window.randomAnnouncmentsList);
 
     for (var i = 0; i < pins.length; i++) {
       fragment.appendChild(pins[i]);
@@ -66,11 +66,16 @@
   });
 
   mainPin.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.KeyCodes.ENTER) {
+    if (evt.keyCode === window.card.KeyCodes.ENTER) {
       activatePage();
       getAddress();
     }
   });
 
   initPage();
+
+  window.map = {
+    newOfferForm: newOfferForm,
+    mapFilterContainer: mapFilterContainer
+  };
 })();

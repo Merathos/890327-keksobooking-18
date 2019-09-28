@@ -8,13 +8,13 @@
     PALACE: '10000'
   };
 
-  var submitBtn = window.newOfferForm.querySelector('.ad-form__submit');
-  var roomInput = window.newOfferForm.querySelector('#room_number');
-  var guestsInput = window.newOfferForm.querySelector('#capacity');
-  var timein = window.newOfferForm.querySelector('#timein');
-  var timeout = window.newOfferForm.querySelector('#timeout');
-  var appartmentType = window.newOfferForm.querySelector('#type');
-  var appartmentPrice = window.newOfferForm.querySelector('#price');
+  var submitBtn = window.map.newOfferForm.querySelector('.ad-form__submit');
+  var roomInput = window.map.newOfferForm.querySelector('#room_number');
+  var guestsInput = window.map.newOfferForm.querySelector('#capacity');
+  var timein = window.map.newOfferForm.querySelector('#timein');
+  var timeout = window.map.newOfferForm.querySelector('#timeout');
+  var appartmentType = window.map.newOfferForm.querySelector('#type');
+  var appartmentPrice = window.map.newOfferForm.querySelector('#price');
 
   var validateGuestsAndRooms = function () {
     var rooms = roomInput.value;

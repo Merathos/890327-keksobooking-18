@@ -10,11 +10,11 @@
     .querySelector('button');
 
   var appendCard = function (announcmentCard) {
-    var cardItem = window.renderCard(announcmentCard);
-    window.mapFilterContainer.insertAdjacentElement('beforebegin', cardItem);
+    var cardItem = window.card.renderCard(announcmentCard);
+    window.map.mapFilterContainer.insertAdjacentElement('beforebegin', cardItem);
   };
 
-  window.renderPins = function (randomAnnouncmentsList) {
+  var renderPins = function (randomAnnouncmentsList) {
     var pins = [];
 
     randomAnnouncmentsList.forEach(function (element) {
@@ -37,5 +37,9 @@
     });
 
     return pins;
+  };
+
+  window.pin = {
+    renderPins: renderPins
   };
 })();

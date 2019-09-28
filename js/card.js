@@ -7,12 +7,12 @@
     HOUSE: 'Дом',
     PALACE: 'Дворец'
   };
-  window.KeyCodes = {
+  var KeyCodes = {
     ESC: 27,
     ENTER: 13
   };
 
-  window.renderCard = function (announcment) {
+  var renderCard = function (announcment) {
     var templateCard = document.querySelector('#card').content;
     var mapCard = templateCard.querySelector('.map__card');
     var itemCard = mapCard.cloneNode(true);
@@ -29,7 +29,7 @@
     var photos = itemCard.querySelector('.popup__photos');
 
     var onPopupEscPress = function (evt) {
-      if (evt.keyCode === window.KeyCodes.ESC) {
+      if (evt.keyCode === KeyCodes.ESC) {
         closeCard();
       }
     };
@@ -77,5 +77,10 @@
     closeBtn.addEventListener('click', closeCard);
 
     return itemCard;
+  };
+
+  window.card = {
+    KeyCodes: KeyCodes,
+    renderCard: renderCard
   };
 })();
