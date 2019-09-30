@@ -92,7 +92,7 @@
 
   var appendPins = function () {
     var fragment = document.createDocumentFragment();
-    var pins = window.pin.renderPins(window.randomAnnouncmentsList);
+    var pins = window.pin.renderPins(window.data.randomAnnouncmentsList);
 
     for (var i = 0; i < pins.length; i++) {
       fragment.appendChild(pins[i]);

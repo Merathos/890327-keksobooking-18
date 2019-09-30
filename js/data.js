@@ -62,5 +62,7 @@
     return randomAnnouncmentsList;
   };
 
-  window.randomAnnouncmentsList = getRandomAnnouncments();
+  window.data = {
+    randomAnnouncmentsList: getRandomAnnouncments()
+  };
 })();
