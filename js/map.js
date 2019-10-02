@@ -10,10 +10,6 @@
   var mapFilterContainer = document.querySelector('.map__filters-container');
 
   var isPageActive = false;
-  var startCoords = {
-    x: 0,
-    y: 0
-  };
 
   var activatePage = function () {
     mapSection.classList.remove('map--faded');
@@ -43,23 +39,23 @@
   };
 
   var onMouseMove = function (moveEvt) {
+    var coordsLimits = {
+      x: {
+        min: map.getBoundingClientRect().left,
+        max: map.getBoundingClientRect().right
+      },
+      y: {
+        min: map.getBoundingClientRect().top,
+        max: map.getBoundingClientRect().bottom
+      }
+    };
+
     moveEvt.preventDefault();
 
-    var shift = {
-      x: startCoords.x - moveEvt.clientX,
-      y: startCoords.y - moveEvt.clientY
-    };
-
-    startCoords = {
-      x: moveEvt.clientX,
-      y: moveEvt.clientY
-    };
-
-    var currentY = mainPin.offsetTop - shift.y;
-    var currentX = mainPin.offsetLeft - shift.x;
-
-    mainPin.style.top = Math.max(40, Math.min(620, currentY)) + 'px';
-    mainPin.style.left = Math.max(0, Math.min(1135, currentX)) + 'px';
+    var currentX = Math.max(coordsLimits.x.min + mainPin.offsetWidth / 2, Math.min(coordsLimits.x.max - mainPin.offsetWidth / 2, moveEvt.pageX));
+    var currentY = Math.max(coordsLimits.y.min + mainPin.offsetHeight, Math.min(coordsLimits.y.max - mainPin.offsetHeight, moveEvt.pageY));
+    mainPin.style.left = currentX - coordsLimits.x.min - mainPin.offsetWidth / 2 + 'px';
+    mainPin.style.top = currentY - mainPin.offsetHeight / 2 + 'px';
     getAddress();
   };
 
@@ -74,11 +70,6 @@
   var dragHandler = function (evt) {
     evt.preventDefault();
 
-    startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   };
@@ -92,7 +83,7 @@
 
   var appendPins = function () {
     var fragment = document.createDocumentFragment();
-    var pins = window.pin.renderPins(window.randomAnnouncmentsList);
+    var pins = window.pin.renderPins(window.data.randomAnnouncmentsList);
 
     for (var i = 0; i < pins.length; i++) {
       fragment.appendChild(pins[i]);
