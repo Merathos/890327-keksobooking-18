@@ -5,6 +5,7 @@
     WIDTH: 50,
     HEIGHT: 70
   };
+
   var pinTemplate = document.querySelector('#pin')
     .content
     .querySelector('button');

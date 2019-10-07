@@ -2,6 +2,9 @@
 
 (function () {
   var PIN_TIP_HEIGHT = 19;
+  var URL = {
+    LOAD: 'https://js.dump.academy/keksobooking/data'
+  };
   var map = document.querySelector('.map__pins');
   var mainPin = map.querySelector('.map__pin--main');
   var mapSection = document.querySelector('.map');
@@ -82,13 +85,15 @@
   };
 
   var appendPins = function () {
-    var fragment = document.createDocumentFragment();
-    var pins = window.pin.renderPins(window.data.randomAnnouncmentsList);
+    window.backend.load(URL.LOAD, function (data) {
+      var fragment = document.createDocumentFragment();
+      var pins = window.pin.renderPins(data);
 
-    for (var i = 0; i < pins.length; i++) {
-      fragment.appendChild(pins[i]);
-    }
-    map.appendChild(fragment);
+      for (var i = 0; i < pins.length; i++) {
+        fragment.appendChild(pins[i]);
+      }
+      map.appendChild(fragment);
+    }, window.backend.onError);
   };
 
   var initPage = function () {
@@ -112,6 +117,7 @@
 
   window.map = {
     newOfferForm: newOfferForm,
-    mapFilterContainer: mapFilterContainer
+    mapFilterContainer: mapFilterContainer,
+    deactivatePage: deactivatePage
   };
 })();
