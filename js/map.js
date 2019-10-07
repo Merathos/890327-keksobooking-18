@@ -3,7 +3,8 @@
 (function () {
   var PIN_TIP_HEIGHT = 19;
   var URL = {
-    LOAD: 'https://js.dump.academy/keksobooking/data'
+    LOAD: 'https://js.dump.academy/keksobooking/data',
+    SAVE: 'https://js.dump.academy/keksobooking'
   };
   var map = document.querySelector('.map__pins');
   var mainPin = map.querySelector('.map__pin--main');
@@ -13,6 +14,7 @@
   var mapFilterContainer = document.querySelector('.map__filters-container');
 
   var isPageActive = false;
+  var MAIN_PIN_DEFAULT = 'left: 570px;' + 'top: 375px;';
 
   var activatePage = function () {
     mapSection.classList.remove('map--faded');
@@ -26,6 +28,7 @@
     if (!isPageActive) {
       appendPins();
     }
+
     isPageActive = true;
   };
 
@@ -38,6 +41,17 @@
     mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
       elem.disabled = true;
     });
+    if (document.querySelectorAll('.map__pin:not(.map__pin--main)')) {
+      document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (elem) {
+        elem.remove();
+      });
+    }
+    if (document.querySelector('.map__card')) {
+      document.querySelector('.map__card').remove();
+    }
+    document.querySelector('.map__pin--main').style.cssText = MAIN_PIN_DEFAULT;
+    newOfferForm.reset();
+    getAddress();
     isPageActive = false;
   };
 
@@ -118,6 +132,7 @@
   window.map = {
     newOfferForm: newOfferForm,
     mapFilterContainer: mapFilterContainer,
-    deactivatePage: deactivatePage
+    deactivatePage: deactivatePage,
+    URL: URL
   };
 })();
