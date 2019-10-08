@@ -62,19 +62,19 @@
     appartmentPrice.min = parseInt(HousingTypeToPrice[appartmentType.value.toUpperCase()], 10);
   };
 
+  var onEscPress = function (evt) {
+    if (evt.keyCode === window.card.KeyCodes.ESC) {
+      closeMsg();
+    }
+  };
+
+  var closeMsg = function () {
+    document.querySelector('.success').remove();
+    document.removeEventListener('keydown', onEscPress);
+    document.removeEventListener('click', closeMsg);
+  };
+
   var showSuccessMsg = function () {
-    var onEscPress = function (evt) {
-      if (evt.keyCode === window.card.KeyCodes.ESC) {
-        closeMsg();
-      }
-    };
-
-    var closeMsg = function () {
-      document.querySelector('.success').remove();
-      document.removeEventListener('keydown', onEscPress);
-      document.removeEventListener('click', closeMsg);
-    };
-
     var successTemplate = document.querySelector('#success')
       .content;
     var success = successTemplate.cloneNode(true);
@@ -94,7 +94,7 @@
   });
   window.map.newOfferForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.save(window.map.URL.SAVE, new FormData(window.map.newOfferForm), function () {
+    window.backend.save(window.map.Url.SAVE, new FormData(window.map.newOfferForm), function () {
       window.map.deactivatePage();
       showSuccessMsg();
     }, window.backend.onError);

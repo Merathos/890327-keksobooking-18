@@ -2,7 +2,7 @@
 
 (function () {
   var PIN_TIP_HEIGHT = 19;
-  var URL = {
+  var Url = {
     LOAD: 'https://js.dump.academy/keksobooking/data',
     SAVE: 'https://js.dump.academy/keksobooking'
   };
@@ -99,7 +99,7 @@
   };
 
   var appendPins = function () {
-    window.backend.load(URL.LOAD, function (data) {
+    window.backend.load(Url.LOAD, function (data) {
       var fragment = document.createDocumentFragment();
       var pins = window.pin.renderPins(data);
 
@@ -133,6 +133,6 @@
     newOfferForm: newOfferForm,
     mapFilterContainer: mapFilterContainer,
     deactivatePage: deactivatePage,
-    URL: URL
+    Url: Url
   };
 })();

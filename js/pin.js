@@ -12,6 +12,9 @@
 
   var appendCard = function (announcmentCard) {
     var cardItem = window.card.renderCard(announcmentCard);
+    if (document.querySelector('.map__card')) {
+      document.querySelector('.map__card').remove();
+    }
     window.map.mapFilterContainer.insertAdjacentElement('beforebegin', cardItem);
   };
 
@@ -31,9 +34,6 @@
       pinElement.style.cssText = pinCoordinates;
 
       pinElement.addEventListener('click', function () {
-        if (document.querySelector('.map__card')) {
-          document.querySelector('.map__card').remove();
-        }
         appendCard(element);
       });
 

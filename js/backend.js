@@ -36,7 +36,7 @@
     var errorBody = error.querySelector('.error');
     var message = error.querySelector('.error__message');
     var errorButton = error.querySelector('.error__button');
-    message.innerHTML = errorMsg;
+    message.textContent = errorMsg;
     document.body.insertAdjacentElement('afterbegin', errorBody);
     errorButton.addEventListener('click', function () {
       errorBody.remove();
