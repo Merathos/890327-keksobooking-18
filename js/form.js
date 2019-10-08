@@ -62,6 +62,28 @@
     appartmentPrice.min = parseInt(HousingTypeToPrice[appartmentType.value.toUpperCase()], 10);
   };
 
+  var onEscPress = function (evt) {
+    if (evt.keyCode === window.card.KeyCodes.ESC) {
+      closeMsg();
+    }
+  };
+
+  var closeMsg = function () {
+    document.querySelector('.success').remove();
+    document.removeEventListener('keydown', onEscPress);
+    document.removeEventListener('click', closeMsg);
+  };
+
+  var showSuccessMsg = function () {
+    var successTemplate = document.querySelector('#success')
+      .content;
+    var success = successTemplate.cloneNode(true);
+    var successBody = success.querySelector('.success');
+    document.body.insertAdjacentElement('afterbegin', successBody);
+    document.addEventListener('keydown', onEscPress);
+    document.addEventListener('click', closeMsg);
+  };
+
   roomInput.addEventListener('change', onRoomsOrGuestsInput);
   guestsInput.addEventListener('change', onRoomsOrGuestsInput);
   timein.addEventListener('change', syncTimeOut);
@@ -69,5 +91,12 @@
   appartmentType.addEventListener('change', getPriceForAppartment);
   submitBtn.addEventListener('click', function () {
     onRoomsOrGuestsInput();
+  });
+  window.map.newOfferForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(window.map.Url.SAVE, new FormData(window.map.newOfferForm), function () {
+      window.map.deactivatePage();
+      showSuccessMsg();
+    }, window.backend.onError);
   });
 })();

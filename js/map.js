@@ -2,6 +2,10 @@
 
 (function () {
   var PIN_TIP_HEIGHT = 19;
+  var Url = {
+    LOAD: 'https://js.dump.academy/keksobooking/data',
+    SAVE: 'https://js.dump.academy/keksobooking'
+  };
   var map = document.querySelector('.map__pins');
   var mainPin = map.querySelector('.map__pin--main');
   var mapSection = document.querySelector('.map');
@@ -10,6 +14,7 @@
   var mapFilterContainer = document.querySelector('.map__filters-container');
 
   var isPageActive = false;
+  var MAIN_PIN_DEFAULT = 'left: 570px;' + 'top: 375px;';
 
   var activatePage = function () {
     mapSection.classList.remove('map--faded');
@@ -23,6 +28,7 @@
     if (!isPageActive) {
       appendPins();
     }
+
     isPageActive = true;
   };
 
@@ -35,6 +41,17 @@
     mapFilterContainer.querySelectorAll('fieldset, input, select').forEach(function (elem) {
       elem.disabled = true;
     });
+    if (document.querySelectorAll('.map__pin:not(.map__pin--main)')) {
+      document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (elem) {
+        elem.remove();
+      });
+    }
+    if (document.querySelector('.map__card')) {
+      document.querySelector('.map__card').remove();
+    }
+    document.querySelector('.map__pin--main').style.cssText = MAIN_PIN_DEFAULT;
+    newOfferForm.reset();
+    getAddress();
     isPageActive = false;
   };
 
@@ -82,13 +99,15 @@
   };
 
   var appendPins = function () {
-    var fragment = document.createDocumentFragment();
-    var pins = window.pin.renderPins(window.data.randomAnnouncmentsList);
+    window.backend.load(Url.LOAD, function (data) {
+      var fragment = document.createDocumentFragment();
+      var pins = window.pin.renderPins(data);
 
-    for (var i = 0; i < pins.length; i++) {
-      fragment.appendChild(pins[i]);
-    }
-    map.appendChild(fragment);
+      for (var i = 0; i < pins.length; i++) {
+        fragment.appendChild(pins[i]);
+      }
+      map.appendChild(fragment);
+    }, window.backend.onError);
   };
 
   var initPage = function () {
@@ -112,6 +131,8 @@
 
   window.map = {
     newOfferForm: newOfferForm,
-    mapFilterContainer: mapFilterContainer
+    mapFilterContainer: mapFilterContainer,
+    deactivatePage: deactivatePage,
+    Url: Url
   };
 })();

@@ -5,12 +5,16 @@
     WIDTH: 50,
     HEIGHT: 70
   };
+
   var pinTemplate = document.querySelector('#pin')
     .content
     .querySelector('button');
 
   var appendCard = function (announcmentCard) {
     var cardItem = window.card.renderCard(announcmentCard);
+    if (document.querySelector('.map__card')) {
+      document.querySelector('.map__card').remove();
+    }
     window.map.mapFilterContainer.insertAdjacentElement('beforebegin', cardItem);
   };
 
