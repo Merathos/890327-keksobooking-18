@@ -20,7 +20,6 @@
 
   var renderPins = function (randomAnnouncmentsList) {
     var pins = [];
-
     randomAnnouncmentsList.forEach(function (element) {
       var pinElement = pinTemplate.cloneNode(true);
 
