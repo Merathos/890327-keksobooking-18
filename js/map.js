@@ -107,9 +107,9 @@
     var fragment = document.createDocumentFragment();
     var pins = window.pin.renderPins(data);
 
-    for (var i = 0; i < pins.length; i++) {
-      fragment.appendChild(pins[i]);
-    }
+    pins.forEach(function (el) {
+      fragment.appendChild(el);
+    });
     map.appendChild(fragment);
   };
 
