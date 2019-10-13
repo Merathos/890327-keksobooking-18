@@ -16,6 +16,11 @@
   var isPageActive = false;
   var MAIN_PIN_DEFAULT = 'left: 570px;' + 'top: 375px;';
 
+  var successHandler = function (data) {
+    window.map.offers = data;
+    appendPins(window.filters.filterOffers(window.map.offers));
+  };
+
   var activatePage = function () {
     mapSection.classList.remove('map--faded');
     newOfferForm.classList.remove('ad-form--disabled');
@@ -26,7 +31,7 @@
       elem.disabled = false;
     });
     if (!isPageActive) {
-      appendPins();
+      window.backend.load(Url.LOAD, successHandler, window.backend.onError);
     }
 
     isPageActive = true;
@@ -98,16 +103,14 @@
     addressInput.value = xCoord + ', ' + yCoord;
   };
 
-  var appendPins = function () {
-    window.backend.load(Url.LOAD, function (data) {
-      var fragment = document.createDocumentFragment();
-      var pins = window.pin.renderPins(data);
+  var appendPins = function (data) {
+    var fragment = document.createDocumentFragment();
+    var pins = window.pin.renderPins(data);
 
-      for (var i = 0; i < pins.length; i++) {
-        fragment.appendChild(pins[i]);
-      }
-      map.appendChild(fragment);
-    }, window.backend.onError);
+    pins.forEach(function (el) {
+      fragment.appendChild(el);
+    });
+    map.appendChild(fragment);
   };
 
   var initPage = function () {
@@ -133,6 +136,7 @@
     newOfferForm: newOfferForm,
     mapFilterContainer: mapFilterContainer,
     deactivatePage: deactivatePage,
-    Url: Url
+    Url: Url,
+    appendPins: appendPins
   };
 })();
