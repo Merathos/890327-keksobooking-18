@@ -7,7 +7,6 @@
     HOUSE: '5000',
     PALACE: '10000'
   };
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var submitBtn = window.map.newOfferForm.querySelector('.ad-form__submit');
   var roomInput = window.map.newOfferForm.querySelector('#room_number');
@@ -19,7 +18,7 @@
   var avatarInput = document.querySelector('.ad-form-header__input');
   var avatarPreview = document.querySelector('.ad-form-header__preview');
   var apartmentInput = document.querySelector('.ad-form__input');
-  var apartmentPhotoPreview = document.querySelector('.ad-form__photo');
+  var apartmentPhotoPreview = document.querySelector('.ad-form__photo-container');
 
   var validateGuestsAndRooms = function () {
     var rooms = roomInput.value;
@@ -91,39 +90,48 @@
 
   var removeImages = function () {
     avatarPreview.querySelector('img').src = 'img/muffin-grey.svg';
-    apartmentPhotoPreview.textContent = '';
+    document.querySelectorAll('.ad-form__photo').forEach(function (el) {
+      el.remove();
+    });
+    var imgWrap = document.createElement('div');
+    imgWrap.classList.add('ad-form__photo');
+    apartmentPhotoPreview.appendChild(imgWrap);
   };
 
   var appendImage = function (reader, preview) {
+    var imgWrap = document.createElement('div');
     var img = document.createElement('img');
+    imgWrap.classList.add('ad-form__photo');
     img.src = reader.result;
-    img.height = 100;
-    preview.appendChild(img);
+    img.height = 70;
+    img.width = 70;
+    imgWrap.appendChild(img);
+    preview.appendChild(imgWrap);
   };
 
   var onFileUpload = function (input, preview, appendItems) {
     return function () {
-      var file = input.files[0];
-      var fileName = file.name.toLowerCase();
-
-      var matches = FILE_TYPES.some(function (item) {
-        return fileName.endsWith(item);
-      });
-
-      if (matches) {
-        var reader = new FileReader();
-
-        reader.addEventListener('load', function () {
-          if (appendItems && preview.querySelector('img')) {
-            appendImage(reader, preview);
-          } else if (!preview.querySelector('img')) {
-            appendImage(reader, preview);
-          } else {
-            preview.querySelector('img').src = reader.result;
-          }
+      var files = input.files;
+      if (appendItems) {
+        document.querySelectorAll('.ad-form__photo').forEach(function (el) {
+          el.remove();
         });
+      }
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
 
-        reader.readAsDataURL(file);
+        if (file.type.match('image')) {
+          var picReader = new FileReader();
+          picReader.addEventListener('load', function (event) {
+            var picFile = event.target;
+            if (appendItems) {
+              appendImage(picFile, preview);
+            } else {
+              preview.querySelector('img').src = picReader.result;
+            }
+          });
+        }
+        picReader.readAsDataURL(file);
       }
     };
   };
