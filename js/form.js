@@ -111,16 +111,13 @@
 
   var onFileUpload = function (input, preview, appendItems) {
     return function () {
-      var files = input.files;
-      if (appendItems) {
-        document.querySelectorAll('.ad-form__photo').forEach(function (el) {
-          el.remove();
-        });
-      }
-      for (var i = 0; i < files.length; i++) {
-        var file = files[i];
+      var files = Array.from(input.files);
 
-        if (file.type.match('image')) {
+      if (!document.querySelector('.ad-form__photo').innerHTML) {
+        document.querySelector('.ad-form__photo').remove();
+      }
+      files.forEach(function (el) {
+        if (el.type.match('image')) {
           var picReader = new FileReader();
           picReader.addEventListener('load', function (event) {
             var picFile = event.target;
@@ -131,8 +128,8 @@
             }
           });
         }
-        picReader.readAsDataURL(file);
-      }
+        picReader.readAsDataURL(el);
+      });
     };
   };
 
