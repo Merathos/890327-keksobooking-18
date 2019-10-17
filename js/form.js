@@ -113,7 +113,7 @@
     return function () {
       var files = Array.from(input.files);
 
-      if (!document.querySelector('.ad-form__photo').innerHTML) {
+      if (document.querySelector('.ad-form__photo') && !document.querySelector('.ad-form__photo').innerHTML) {
         document.querySelector('.ad-form__photo').remove();
       }
       files.forEach(function (el) {
@@ -150,8 +150,14 @@
     }, window.backend.onError);
   });
 
+  window.map.newOfferForm.addEventListener('invalid', function (evt) {
+    evt.target.style.borderColor = 'black';
+  });
+
   window.map.newOfferForm.addEventListener('reset', function () {
     removeImages();
+    document.querySelector('.map__filters').reset();
+    window.map.deactivatePage();
   });
 
   apartmentInput.addEventListener('change', onFileUpload(apartmentInput, apartmentPhotoPreview, true));

@@ -12,7 +12,7 @@
     ENTER: 13
   };
 
-  var renderCard = function (announcment) {
+  var render = function (announcment) {
     var templateCard = document.querySelector('#card').content;
     var mapCard = templateCard.querySelector('.map__card');
     var itemCard = mapCard.cloneNode(true);
@@ -37,6 +37,11 @@
     var closeCard = function () {
       itemCard.remove();
       document.removeEventListener('keydown', onPopupEscPress);
+      document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (el) {
+        if (el.classList.contains('map__pin--active')) {
+          el.classList.remove('map__pin--active');
+        }
+      });
     };
 
     title.textContent = announcment.offer.title;
@@ -52,25 +57,27 @@
     checkInOut.textContent = 'Заезд после ' + announcment.offer.checkin + ', выезд до ' + announcment.offer.checkout;
 
     featureList.innerHTML = '';
-    for (var i = 0; i < announcment.offer.features.length; i++) {
+
+    announcment.offer.features.forEach(function (el) {
       var featureItem = document.createElement('li');
-      var featureClass = 'popup__feature popup__feature--' + announcment.offer.features[i];
+      var featureClass = 'popup__feature popup__feature--' + el;
       featureItem.className = featureClass;
       featureList.appendChild(featureItem);
-    }
+    });
 
     description.textContent = announcment.offer.description;
 
     photos.innerHTML = '';
-    for (i = 0; i < announcment.offer.photos.length; i++) {
+
+    announcment.offer.photos.forEach(function (el) {
       var photoItem = document.createElement('img');
       photoItem.classList.add('popup__photo');
-      photoItem.src = announcment.offer.photos[i];
+      photoItem.src = el;
       photoItem.width = 45;
       photoItem.height = 40;
       photoItem.alt = announcment.offer.title;
       photos.appendChild(photoItem);
-    }
+    });
 
     avatar.src = announcment.author.avatar;
     document.addEventListener('keydown', onPopupEscPress);
@@ -81,6 +88,6 @@
 
   window.card = {
     KeyCodes: KeyCodes,
-    renderCard: renderCard
+    render: render
   };
 })();

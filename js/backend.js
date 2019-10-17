@@ -36,11 +36,22 @@
     var errorBody = error.querySelector('.error');
     var message = error.querySelector('.error__message');
     var errorButton = error.querySelector('.error__button');
+
+    var onEscPress = function (evt) {
+      if (evt.keyCode === window.card.KeyCodes.ESC) {
+        errorBody.remove();
+        window.map.deactivatePage();
+        document.removeEventListener('keydown', onEscPress);
+      }
+    };
+
     message.textContent = errorMsg;
     document.body.insertAdjacentElement('afterbegin', errorBody);
+    document.addEventListener('keydown', onEscPress);
     errorButton.addEventListener('click', function () {
       errorBody.remove();
       window.map.deactivatePage();
+      document.removeEventListener('keydown', onEscPress);
     });
   };
 

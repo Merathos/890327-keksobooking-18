@@ -18,7 +18,15 @@
 
   var successHandler = function (data) {
     window.map.offers = data;
-    appendPins(window.filters.filterOffers(window.map.offers));
+    appendPins(window.filters.sortOffers(window.map.offers));
+  };
+
+  var getAddress = function () {
+    // debugger;
+    var yPointer = isPageActive ? mainPin.offsetHeight + PIN_TIP_HEIGHT : mainPin.offsetHeight / 2;
+    var xCoord = Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2);
+    var yCoord = Math.round(mainPin.offsetTop + yPointer);
+    addressInput.value = xCoord + ', ' + yCoord;
   };
 
   var activatePage = function () {
@@ -56,28 +64,36 @@
     }
     document.querySelector('.map__pin--main').style.cssText = MAIN_PIN_DEFAULT;
     newOfferForm.reset();
-    getAddress();
+
+    setTimeout(function () {
+      getAddress();
+    }, 0);
     isPageActive = false;
   };
 
   var onMouseMove = function (moveEvt) {
+    var YCoordLimits = {
+      MIN: 46,
+      MAX: 158
+    };
+
     var coordsLimits = {
       x: {
         min: map.getBoundingClientRect().left,
         max: map.getBoundingClientRect().right
       },
       y: {
-        min: map.getBoundingClientRect().top,
-        max: map.getBoundingClientRect().bottom
+        min: map.getBoundingClientRect().top + YCoordLimits.MIN,
+        max: map.getBoundingClientRect().bottom - YCoordLimits.MAX
       }
     };
 
     moveEvt.preventDefault();
 
     var currentX = Math.max(coordsLimits.x.min + mainPin.offsetWidth / 2, Math.min(coordsLimits.x.max - mainPin.offsetWidth / 2, moveEvt.pageX));
-    var currentY = Math.max(coordsLimits.y.min + mainPin.offsetHeight, Math.min(coordsLimits.y.max - mainPin.offsetHeight, moveEvt.pageY));
+    var currentY = Math.max(coordsLimits.y.min, Math.min(coordsLimits.y.max, moveEvt.pageY));
     mainPin.style.left = currentX - coordsLimits.x.min - mainPin.offsetWidth / 2 + 'px';
-    mainPin.style.top = currentY - mainPin.offsetHeight / 2 + 'px';
+    mainPin.style.top = currentY + 'px';
     getAddress();
   };
 
@@ -96,16 +112,9 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  var getAddress = function () {
-    var yPointer = isPageActive ? mainPin.offsetHeight + PIN_TIP_HEIGHT : mainPin.offsetHeight / 2;
-    var xCoord = Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2);
-    var yCoord = Math.round(mainPin.offsetTop + yPointer);
-    addressInput.value = xCoord + ', ' + yCoord;
-  };
-
   var appendPins = function (data) {
     var fragment = document.createDocumentFragment();
-    var pins = window.pin.renderPins(data);
+    var pins = window.pin.render(data);
 
     pins.forEach(function (el) {
       fragment.appendChild(el);
@@ -134,7 +143,7 @@
 
   window.map = {
     newOfferForm: newOfferForm,
-    mapFilterContainer: mapFilterContainer,
+    filterContainer: mapFilterContainer,
     deactivatePage: deactivatePage,
     Url: Url,
     appendPins: appendPins

@@ -2,6 +2,10 @@
 
 (function () {
   var MAX_OFFERS = 5;
+  var Prices = {
+    LOW: 10000,
+    HIGH: 50000
+  };
   var filtersForm = document.querySelector('.map__filters');
   var housingType = filtersForm.querySelector('#housing-type');
   var housingPrice = filtersForm.querySelector('#housing-price');
@@ -19,29 +23,29 @@
     });
   };
 
-  function getHousingType(element) {
+  var getHousingType = function (element) {
     return element.offer.type === housingType.value || housingType.value === 'any';
-  }
+  };
 
-  function getHousingRooms(element) {
+  var getHousingRooms = function (element) {
     return housingRooms.value === 'any' ? true : element.offer.rooms === +housingRooms.value;
-  }
+  };
 
-  function getHousingGuests(element) {
+  var getHousingGuests = function (element) {
     return housingGuests.value === 'any' ? true : element.offer.guests === +housingGuests.value;
-  }
+  };
 
   var getPrice = function (element) {
     var isRequiredPrice;
     switch (housingPrice.value) {
       case 'middle':
-        isRequiredPrice = (element > 10000) && (element < 50000);
+        isRequiredPrice = (element > Prices.LOW) && (element < Prices.HIGH);
         break;
       case 'low':
-        isRequiredPrice = (element < 10000);
+        isRequiredPrice = (element < Prices.LOW);
         break;
       case 'high':
-        isRequiredPrice = (element > 50000);
+        isRequiredPrice = (element > Prices.HIGH);
         break;
       default:
         isRequiredPrice = true;
@@ -51,7 +55,7 @@
 
   };
 
-  function filterOffers(data) {
+  var filterOffers = function (data) {
     return data
       .filter(function (element) {
         return (
@@ -63,7 +67,7 @@
         );
       })
       .slice(0, MAX_OFFERS);
-  }
+  };
 
   filtersForm.addEventListener('change', window.debounce(function () {
     document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (elem) {
@@ -77,6 +81,6 @@
 
 
   window.filters = {
-    filterOffers: filterOffers
+    sortOffers: filterOffers
   };
 })();

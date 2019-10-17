@@ -11,11 +11,11 @@
     .querySelector('button');
 
   var appendCard = function (announcmentCard) {
-    var cardItem = window.card.renderCard(announcmentCard);
+    var cardItem = window.card.render(announcmentCard);
     if (document.querySelector('.map__card')) {
       document.querySelector('.map__card').remove();
     }
-    window.map.mapFilterContainer.insertAdjacentElement('beforebegin', cardItem);
+    window.map.filterContainer.insertAdjacentElement('beforebegin', cardItem);
   };
 
   var renderPins = function (randomAnnouncmentsList) {
@@ -33,7 +33,13 @@
       pinElement.style.cssText = pinCoordinates;
 
       pinElement.addEventListener('click', function () {
+        document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (el) {
+          if (el.classList.contains('map__pin--active')) {
+            el.classList.remove('map__pin--active');
+          }
+        });
         appendCard(element);
+        pinElement.classList.add('map__pin--active');
       });
 
       pins.push(pinElement);
@@ -43,6 +49,6 @@
   };
 
   window.pin = {
-    renderPins: renderPins
+    render: renderPins
   };
 })();
