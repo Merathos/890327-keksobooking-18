@@ -162,8 +162,4 @@
 
   apartmentInput.addEventListener('change', onFileUpload(apartmentInput, apartmentPhotoPreview, true));
   avatarInput.addEventListener('change', onFileUpload(avatarInput, avatarPreview, false));
-
-  window.form = {
-    removeImages: removeImages
-  };
 })();

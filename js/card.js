@@ -12,6 +12,22 @@
     ENTER: 13
   };
 
+  var onPopupEscPress = function (evt) {
+    if (evt.keyCode === KeyCodes.ESC) {
+      closeCard();
+    }
+  };
+
+  var closeCard = function () {
+    document.querySelector('.map__card').remove();
+    document.removeEventListener('keydown', onPopupEscPress);
+    document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (el) {
+      if (el.classList.contains('map__pin--active')) {
+        el.classList.remove('map__pin--active');
+      }
+    });
+  };
+
   var render = function (announcment) {
     var templateCard = document.querySelector('#card').content;
     var mapCard = templateCard.querySelector('.map__card');
@@ -27,22 +43,6 @@
     var description = itemCard.querySelector('.popup__description');
     var avatar = itemCard.querySelector('.popup__avatar');
     var photos = itemCard.querySelector('.popup__photos');
-
-    var onPopupEscPress = function (evt) {
-      if (evt.keyCode === KeyCodes.ESC) {
-        closeCard();
-      }
-    };
-
-    var closeCard = function () {
-      itemCard.remove();
-      document.removeEventListener('keydown', onPopupEscPress);
-      document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (el) {
-        if (el.classList.contains('map__pin--active')) {
-          el.classList.remove('map__pin--active');
-        }
-      });
-    };
 
     title.textContent = announcment.offer.title;
 
@@ -88,6 +88,7 @@
 
   window.card = {
     KeyCodes: KeyCodes,
-    render: render
+    render: render,
+    close: closeCard
   };
 })();

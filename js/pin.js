@@ -29,8 +29,7 @@
       pinElement.querySelector('img').setAttribute('alt', offerTitle);
       var locationX = element.location.x + UserPin.WIDTH / 2 + 'px';
       var locationY = element.location.y + UserPin.HEIGHT + 'px';
-      var pinCoordinates = 'left: ' + locationX + '; ' + 'top: ' + locationY + ';';
-      pinElement.style.cssText = pinCoordinates;
+      pinElement.style.cssText = 'left: ' + locationX + '; ' + 'top: ' + locationY + ';';
 
       pinElement.addEventListener('click', function () {
         document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (el) {

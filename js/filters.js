@@ -12,7 +12,6 @@
   var housingRooms = filtersForm.querySelector('#housing-rooms');
   var housingGuests = filtersForm.querySelector('#housing-guests');
   var housingFeatures = filtersForm.querySelector('#housing-features');
-  var card = document.querySelector('.map__card');
 
   var getFeatures = function (element) {
     var requiredFeatures = Array.from(housingFeatures.querySelectorAll('input:checked')).map(function (item) {
@@ -73,8 +72,8 @@
     document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach(function (elem) {
       elem.remove();
     });
-    if (card) {
-      card.remove();
+    if (document.querySelector('.map__card')) {
+      window.card.close();
     }
     window.map.appendPins(filterOffers(window.map.offers));
   }));
