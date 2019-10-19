@@ -22,7 +22,6 @@
   };
 
   var getAddress = function () {
-    // debugger;
     var yPointer = isPageActive ? mainPin.offsetHeight + PIN_TIP_HEIGHT : mainPin.offsetHeight / 2;
     var xCoord = Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2);
     var yCoord = Math.round(mainPin.offsetTop + yPointer);
@@ -72,19 +71,14 @@
   };
 
   var onMouseMove = function (moveEvt) {
-    var YCoordLimits = {
-      MIN: 46,
-      MAX: 158
-    };
-
     var coordsLimits = {
       x: {
         min: map.getBoundingClientRect().left,
         max: map.getBoundingClientRect().right
       },
       y: {
-        min: map.getBoundingClientRect().top + YCoordLimits.MIN,
-        max: map.getBoundingClientRect().bottom - YCoordLimits.MAX
+        min: 78,
+        max: 578
       }
     };
 
@@ -93,7 +87,7 @@
     var currentX = Math.max(coordsLimits.x.min + mainPin.offsetWidth / 2, Math.min(coordsLimits.x.max - mainPin.offsetWidth / 2, moveEvt.pageX));
     var currentY = Math.max(coordsLimits.y.min, Math.min(coordsLimits.y.max, moveEvt.pageY));
     mainPin.style.left = currentX - coordsLimits.x.min - mainPin.offsetWidth / 2 + 'px';
-    mainPin.style.top = currentY + 'px';
+    mainPin.style.top = currentY - mainPin.offsetHeight / 2 + 'px';
     getAddress();
   };
 
